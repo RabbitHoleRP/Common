@@ -16,7 +16,7 @@ public final class Common {
         messages = new Messages();
     }
 
-    public static Messages getMessages() {
+    public Messages getMessages() {
         return messages;
     }
 }
