@@ -18,6 +18,19 @@
     </properties>
     <url>https://github.com/RabbitHoleRP</url>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>common</id>
+            <name>Common</name>
+            <url>https://repo.rabbithole.com.br/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>common</id>
+            <name>Common</name>
+            <url>https://repo.rabbithole.com.br/releases</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <plugins>
             <plugin>
