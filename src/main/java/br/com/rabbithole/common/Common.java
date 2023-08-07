@@ -16,6 +16,11 @@ public final class Common {
         messages = new Messages();
     }
 
+    /**
+     * Acesso do componente de Mensagens.
+     *
+     * @return Instância do componente de Mensagens.
+     */
     public Messages getMessages() {
         return messages;
     }
