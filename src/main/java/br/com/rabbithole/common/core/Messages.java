@@ -1,7 +1,7 @@
 package br.com.rabbithole.common.core;
 
 import br.com.rabbithole.common.utils.StringUtils;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -14,32 +14,32 @@ import org.jetbrains.annotations.NotNull;
 public class Messages {
 
     /**
-     * Envia uma mensagem de Erro para o Jogador
+     * Envia uma mensagem de Erro para a Instância que ativou o evento.
      *
-     * @param player Jogador que receberá a mensagem.
+     * @param commandSender Instância que receberá a mensagem.
      * @param errorMessage Mensagem de erro que será enviada.
      */
-    public void sendError(@NotNull Player player, @NotNull String errorMessage) {
-        player.sendMessage(StringUtils.format("<red>" + errorMessage));
+    public void sendError(@NotNull CommandSender commandSender, @NotNull String errorMessage) {
+        commandSender.sendMessage(StringUtils.format("<red>" + errorMessage));
     }
 
     /**
-     * Enviar uma mensagem de Aviso para o Jogador
+     * Enviar uma mensagem de Aviso para a Instância que ativou o evento.
      *
-     * @param player Jogador que receberá a mensagem.
+     * @param commandSender Instância que receberá a mensagem.
      * @param warnMessage Mensagem de aviso que será enviada.
      */
-    public void sendWarn(@NotNull Player player, @NotNull String warnMessage) {
-        player.sendMessage(StringUtils.format("<yellow>" + warnMessage));
+    public void sendWarn(@NotNull CommandSender commandSender, @NotNull String warnMessage) {
+        commandSender.sendMessage(StringUtils.format("<yellow>" + warnMessage));
     }
 
     /**
-     * Enviar uma mensagem de Sucesso para o Jogador.
+     * Enviar uma mensagem de Sucesso para a Instância que ativou o evento.
      *
-     * @param player Jogador que receberá a mensagem.
+     * @param commandSender Instância que receberá a mensagem.
      * @param successMessage Mensagem de sucesso que será enviada.
      */
-    public void sendSuccess(@NotNull Player player, @NotNull String successMessage) {
-        player.sendMessage(StringUtils.format("<green>" + successMessage));
+    public void sendSuccess(@NotNull CommandSender commandSender, @NotNull String successMessage) {
+        commandSender.sendMessage(StringUtils.format("<green>" + successMessage));
     }
 }
