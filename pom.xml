@@ -6,14 +6,14 @@
 
     <groupId>br.com.rabbithole</groupId>
     <artifactId>Common</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Common</name>
 
     <description>Common Structs</description>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <url>https://github.com/RabbitHoleRP</url>
