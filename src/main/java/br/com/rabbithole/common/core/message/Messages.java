@@ -1,4 +1,4 @@
-package br.com.rabbithole.common.core;
+package br.com.rabbithole.common.core.message;
 
 import br.com.rabbithole.common.utils.StringUtils;
 import org.bukkit.command.CommandSender;
