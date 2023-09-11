@@ -1,6 +1,6 @@
 package br.com.rabbithole.common;
 
-import br.com.rabbithole.common.core.Messages;
+import br.com.rabbithole.common.core.message.Messages;
 
 /**
  * Classe de acesso da Biblioteca.
