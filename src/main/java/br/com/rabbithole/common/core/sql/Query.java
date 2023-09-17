@@ -31,8 +31,8 @@ public class Query implements AutoCloseable {
         return this.resultSet = this.statement.executeQuery();
     }
 
-    public void executeUpdate() throws SQLException {
-        this.statement.executeUpdate();
+    public int executeUpdate() throws SQLException {
+        return this.statement.executeUpdate();
     }
 
     @Override
