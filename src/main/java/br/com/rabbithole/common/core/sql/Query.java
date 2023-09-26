@@ -66,8 +66,8 @@ public final class Query implements AutoCloseable {
      *
      * @throws SQLException erro ao executar atualização.
      */
-    public void executeUpdate() throws SQLException {
-        this.statement.executeUpdate();
+    public int executeUpdate() throws SQLException {
+        return this.statement.executeUpdate();
     }
 
     /**
