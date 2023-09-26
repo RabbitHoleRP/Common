@@ -64,6 +64,7 @@ public final class Query implements AutoCloseable {
     /**
      * Execução de atualização no Banco de Dados.
      *
+     * @return número de linhas afetadas pela atualização.
      * @throws SQLException erro ao executar atualização.
      */
     public int executeUpdate() throws SQLException {
