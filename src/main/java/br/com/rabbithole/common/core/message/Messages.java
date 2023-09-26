@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public class Messages {
 
     /**
-     * Envia uma mensagem de Erro para a Instância que ativou o evento.
+     * Envia uma mensagem de Erro para a Instância que fez a chamada.
      *
      * @param commandSender Instância que receberá a mensagem.
      * @param errorMessage Mensagem de erro que será enviada.
@@ -24,7 +24,7 @@ public class Messages {
     }
 
     /**
-     * Enviar uma mensagem de Aviso para a Instância que ativou o evento.
+     * Enviar uma mensagem de Aviso para a Instância que fez a chamada.
      *
      * @param commandSender Instância que receberá a mensagem.
      * @param warnMessage Mensagem de aviso que será enviada.
@@ -34,12 +34,22 @@ public class Messages {
     }
 
     /**
-     * Enviar uma mensagem de Sucesso para a Instância que ativou o evento.
+     * Enviar uma mensagem de Sucesso para a Instância que fez a chamada.
      *
      * @param commandSender Instância que receberá a mensagem.
      * @param successMessage Mensagem de sucesso que será enviada.
      */
     public void sendSuccess(@NotNull CommandSender commandSender, @NotNull String successMessage) {
         commandSender.sendMessage(StringUtils.format("<green>" + successMessage));
+    }
+
+    /**
+     * Enviar uma mensagem Customizada para a Instância que fez a chamada.
+     *
+     * @param commandSender Instância que receberá a mensagem.
+     * @param customMessage Mensagem customizada que será enviada.
+     */
+    public void sendCustomMessage(@NotNull CommandSender commandSender, @NotNull String customMessage) {
+        commandSender.sendMessage(StringUtils.format(customMessage));
     }
 }
