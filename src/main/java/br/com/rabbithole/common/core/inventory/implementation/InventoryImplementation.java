@@ -19,10 +19,10 @@ public class InventoryImplementation implements InventoryBase, InventoryHolder {
     private final Map<Integer, ItemStack> registeredItems;
     private final Map<Integer, InventoryClickAction> registeredActions;
 
-    public InventoryImplementation(Component inventoryName, int inventorySize) {
+    public InventoryImplementation(InventoryHolder holder, Component inventoryName, int inventorySize) {
         this.inventoryName = inventoryName;
         this.inventorySize = inventorySize;
-        this.inventory = Bukkit.createInventory(this, inventorySize, inventoryName);
+        this.inventory = Bukkit.createInventory(holder, inventorySize, inventoryName);
         this.registeredItems = new HashMap<>();
         this.registeredActions = new HashMap<>();
     }
@@ -50,7 +50,6 @@ public class InventoryImplementation implements InventoryBase, InventoryHolder {
 
     @Override
     public void addItem(int slot, ItemStack item) {
-        //TODO: TESTAR SE VALE A PENA UTILIZAR OS 2 OU SÓ MANTER O INVENTORY.SETITEM
         this.registeredItems.put(slot, item);
         this.inventory.setItem(slot, item);
     }
@@ -63,5 +62,10 @@ public class InventoryImplementation implements InventoryBase, InventoryHolder {
     @Override
     public @NotNull Inventory getInventory() {
         return this.inventory;
+    }
+
+    @Override
+    public InventoryHolder getInventoryHolder() {
+        return this.inventory.getHolder();
     }
 }
