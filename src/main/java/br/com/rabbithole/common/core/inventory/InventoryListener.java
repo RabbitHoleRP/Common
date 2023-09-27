@@ -2,6 +2,8 @@ package br.com.rabbithole.common.core.inventory;
 
 import br.com.rabbithole.common.core.inventory.actions.InventoryClickAction;
 import br.com.rabbithole.common.core.inventory.implementation.InventoryImplementation;
+import br.com.rabbithole.common.utils.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -26,9 +28,16 @@ public class InventoryListener implements Listener {
         Inventory inventory = event.getClickedInventory();
         InventoryHolder holder = inventory.getHolder();
 
-        if (holder == null) return;
+        if (holder == null) {
+            Bukkit.getConsoleSender().sendMessage("NÃO É 1 HOLDER!");
+            return;
+        }
 
-        if (!(holder instanceof InventoryImplementation)) return;
+        if (!(inventory.getHolder() instanceof InventoryImplementation)) {
+            Bukkit.getConsoleSender().sendMessage(StringUtils.format("<red>NÃO É 1 UMA INSTÂNCIA!"));
+            return;
+        }
+
         event.setCancelled(true);
 
         InventoryImplementation inventoryImplementation = (InventoryImplementation) inventory;
