@@ -8,41 +8,37 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InventoryManager {
-    private final List<InventoryBase> inventoryRegistry;
+    private final Map<Component, InventoryBase> inventoryRegistry;
 
     public InventoryManager(Plugin plugin) {
-        this.inventoryRegistry = new ArrayList<>();
+        this.inventoryRegistry = new HashMap<>();
         new InventoryListener(plugin, this);
     }
 
-    public void registerInventory(InventoryBase inventory) {
-        this.inventoryRegistry.add(inventory);
+    public void registerInventory(Component inventoryName, InventoryBase inventory) {
+        this.inventoryRegistry.put(inventoryName, inventory);
     }
 
-    public List<InventoryBase> getInventoryRegistry() {
-        return inventoryRegistry;
+    public Map<Component, InventoryBase> getInventoryRegistry() {
+        return this.inventoryRegistry;
     }
-
-    /*
-    public boolean isRegistered(Inventory inventory) {
-        for (InventoryBase registeredInventory : this.inventoryRegistry) {
-            if (registeredInventory.getInventory().equals(inventory)) return true;
-        }
-        return false;
-    }
-     */
 
     public boolean isRegistered(Component inventoryName) {
+        /*
         for (InventoryBase registeredInventory : this.inventoryRegistry) {
             if (registeredInventory.getInventoryName().equals(inventoryName)) return true;
         }
-        return false;
+         */
+        return this.inventoryRegistry.containsKey(inventoryName);
     }
 
     //TODO: REMOVER!
+    /*
     public boolean hasAction(int slot, ItemStack item) {
         for (InventoryBase registeredInventory : this.inventoryRegistry) {
             ItemStack itemRegistered = null;
@@ -51,14 +47,25 @@ public class InventoryManager {
         }
         return false;
     }
+     */
 
-    public InventoryClickAction getAction(int slot, ItemStack item) {
+    public InventoryClickAction getAction(Component inventoryName, int slot, ItemStack item) {
+        /*
         for (InventoryBase registeredInventory : this.inventoryRegistry) {
             ItemStack registeredItem = null;
             if (registeredInventory.getRegisteredItems().containsKey(slot)) registeredItem = registeredInventory.getRegisteredItems().get(slot);
             if (registeredInventory.getRegisteredActions().containsKey(slot) && registeredItem != null)
                 return registeredInventory.getRegisteredActions().get(slot);
         }
+         */
+        InventoryBase registeredInventory = this.inventoryRegistry.get(inventoryName);
+        if (registeredInventory == null) return null;
+
+        ItemStack registeredItem = null;
+        if (registeredInventory.getRegisteredItems().containsKey(slot)) registeredItem = registeredInventory.getRegisteredItems().get(slot);
+        if (registeredInventory.getRegisteredActions().containsKey(slot) && registeredItem != null)
+            return registeredInventory.getRegisteredActions().get(slot);
+
         return null;
     }
 }
