@@ -5,12 +5,14 @@ import br.com.rabbithole.common.core.inventory.models.InventoryBase;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class InventoryImplementation implements InventoryBase {
+public class InventoryImplementation implements InventoryBase, InventoryHolder {
     private final Component inventoryName;
     private final int inventorySize;
     private final Inventory inventory;
@@ -20,7 +22,7 @@ public class InventoryImplementation implements InventoryBase {
     public InventoryImplementation(Component inventoryName, int inventorySize) {
         this.inventoryName = inventoryName;
         this.inventorySize = inventorySize;
-        this.inventory = Bukkit.createInventory(null, inventorySize, inventoryName);
+        this.inventory = Bukkit.createInventory(this, inventorySize, inventoryName);
         this.registeredItems = new HashMap<>();
         this.registeredActions = new HashMap<>();
     }
@@ -46,7 +48,7 @@ public class InventoryImplementation implements InventoryBase {
     }
 
     @Override
-    public Inventory getInventory() {
+    public @NotNull Inventory getInventory() {
         return inventory;
     }
 
