@@ -24,22 +24,10 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        Inventory targetInventory = event.getInventory();
         InventoryView inventoryView = event.getView();
 
-        /*
-        if (!this.inventoryManager.isRegistered(targetInventory)) {
-            Bukkit.getConsoleSender().sendMessage("Nenhum inventário corresponde!");
-            return;
-        }
-        Bukkit.getConsoleSender().sendMessage("Algum inventário corresponde!");
-         */
-
-        if (!this.inventoryManager.isRegistered(inventoryView.title())) {
-            Bukkit.getConsoleSender().sendMessage("Nenhum inventário corresponde!");
-            return;
-        }
-        Bukkit.getConsoleSender().sendMessage("Chegamos a algum lugar!");
+        if (!this.inventoryManager.isRegistered(inventoryView.title())) return;
+        event.setCancelled(true);
 
         int clickedSlot = event.getSlot();
         ItemStack clickedItem = event.getCurrentItem();
