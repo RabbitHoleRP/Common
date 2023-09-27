@@ -1,6 +1,8 @@
 package br.com.rabbithole.common;
 
+import br.com.rabbithole.common.core.inventory.InventoryManager;
 import br.com.rabbithole.common.core.message.Messages;
+import org.bukkit.plugin.Plugin;
 
 /**
  * Classe de acesso da Biblioteca.
@@ -11,9 +13,11 @@ import br.com.rabbithole.common.core.message.Messages;
  */
 public final class Common {
     private final Messages messages;
+    private final InventoryManager inventoryManager;
 
-    public Common() {
+    public Common(Plugin plugin) {
         messages = new Messages();
+        inventoryManager = new InventoryManager(plugin);
     }
 
     /**
@@ -23,5 +27,14 @@ public final class Common {
      */
     public Messages getMessages() {
         return messages;
+    }
+
+    /**
+     * Acesso do componente de Inventários.
+     *
+     * @return Instância do componente de Inventários.
+     */
+    public InventoryManager getInventoryManager() {
+        return inventoryManager;
     }
 }
