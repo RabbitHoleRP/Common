@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -22,9 +23,12 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        Inventory inventory = event.getInventory();
+        Inventory inventory = event.getClickedInventory();
+        InventoryHolder holder = inventory.getHolder();
 
-        if (!(inventory.getHolder() instanceof InventoryImplementation)) return;
+        if (holder == null) return;
+
+        if (!(holder instanceof InventoryImplementation)) return;
         event.setCancelled(true);
 
         InventoryImplementation inventoryImplementation = (InventoryImplementation) inventory;

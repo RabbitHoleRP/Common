@@ -47,10 +47,6 @@ public class InventoryImplementation implements InventoryBase, InventoryHolder {
         return this.registeredActions;
     }
 
-    @Override
-    public @NotNull Inventory getInventory() {
-        return inventory;
-    }
 
     @Override
     public void addItem(int slot, ItemStack item) {
@@ -62,5 +58,10 @@ public class InventoryImplementation implements InventoryBase, InventoryHolder {
     @Override
     public void addAction(int slot, InventoryClickAction action) {
         this.registeredActions.put(slot, action);
+    }
+
+    @Override
+    public @NotNull Inventory getInventory() {
+        return this.inventory;
     }
 }
