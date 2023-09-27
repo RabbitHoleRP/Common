@@ -13,6 +13,8 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Objects;
+
 public class InventoryListener implements Listener {
     final Plugin plugin;
     private final InventoryManager inventoryManager;
@@ -25,27 +27,14 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+        InventoryView inventoryView = event.getView();
         Inventory inventory = event.getClickedInventory();
-        InventoryHolder holder = inventory.getHolder();
 
-        if (holder == null) {
-            Bukkit.getConsoleSender().sendMessage("NÃO É 1 HOLDER!");
-            return;
-        }
+        if (!this.inventoryManager.isRegistered(inventoryView.title())) return;
 
-        if (!(inventory.getHolder() instanceof InventoryImplementation)) {
-            Bukkit.getConsoleSender().sendMessage(StringUtils.format("<red>NÃO É 1 UMA INSTÂNCIA!"));
-            return;
-        }
+        InventoryImplementation inventoryImplementation = (InventoryImplementation) Objects.requireNonNull(inventory).getHolder();
 
-        event.setCancelled(true);
-
-        InventoryImplementation inventoryImplementation = (InventoryImplementation) inventory;
-
-        int clickedSlot = event.getSlot();
-
-        if (inventoryImplementation.getRegisteredActions().containsKey(clickedSlot))
-            inventoryImplementation.getRegisteredActions().get(clickedSlot).onClick(event);
+        Bukkit.getConsoleSender().sendMessage(inventoryImplementation.getInventoryName());
 
         /*
         InventoryView inventoryView = event.getView();
