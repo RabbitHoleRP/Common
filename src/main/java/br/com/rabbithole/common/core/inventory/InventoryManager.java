@@ -3,13 +3,10 @@ package br.com.rabbithole.common.core.inventory;
 import br.com.rabbithole.common.core.inventory.actions.InventoryClickAction;
 import br.com.rabbithole.common.core.inventory.models.InventoryBase;
 import net.kyori.adventure.text.Component;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class InventoryManager {
@@ -20,8 +17,8 @@ public class InventoryManager {
         new InventoryListener(plugin, this);
     }
 
-    public void registerInventory(Component inventoryName, InventoryBase inventory) {
-        this.inventoryRegistry.put(inventoryName, inventory);
+    public void registerInventory(InventoryBase inventory) {
+        this.inventoryRegistry.put(inventory.getInventoryName(), inventory);
     }
 
     public Map<Component, InventoryBase> getInventoryRegistry() {
