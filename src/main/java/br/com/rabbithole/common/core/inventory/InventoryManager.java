@@ -2,6 +2,7 @@ package br.com.rabbithole.common.core.inventory;
 
 import br.com.rabbithole.common.core.inventory.actions.InventoryClickAction;
 import br.com.rabbithole.common.core.inventory.models.InventoryBase;
+import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -25,9 +26,18 @@ public class InventoryManager {
         return inventoryRegistry;
     }
 
+    /*
     public boolean isRegistered(Inventory inventory) {
         for (InventoryBase registeredInventory : this.inventoryRegistry) {
             if (registeredInventory.getInventory().equals(inventory)) return true;
+        }
+        return false;
+    }
+     */
+
+    public boolean isRegistered(Component inventoryName) {
+        for (InventoryBase registeredInventory : this.inventoryRegistry) {
+            if (registeredInventory.getInventoryName().equals(inventoryName)) return true;
         }
         return false;
     }
