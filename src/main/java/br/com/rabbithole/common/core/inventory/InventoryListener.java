@@ -1,55 +1,47 @@
 package br.com.rabbithole.common.core.inventory;
 
-import br.com.rabbithole.common.core.inventory.actions.InventoryClickAction;
+import br.com.rabbithole.common.core.inventory.actions.InventoryCloseAction;
 import br.com.rabbithole.common.core.inventory.implementation.InventoryImplementation;
-import br.com.rabbithole.common.utils.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 
-import java.util.Objects;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.plugin.Plugin;
 
 public class InventoryListener implements Listener {
     final Plugin plugin;
-    private final InventoryManager inventoryManager;
 
-    public InventoryListener(Plugin plugin, InventoryManager inventoryManager) {
+    public InventoryListener(Plugin plugin) {
         this.plugin = plugin;
         this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        this.inventoryManager = inventoryManager;
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        InventoryView inventoryView = event.getView();
-        Inventory inventory = event.getClickedInventory();
-
-        if (!this.inventoryManager.isRegistered(inventoryView.title())) return;
-
-        InventoryImplementation inventoryImplementation = (InventoryImplementation) Objects.requireNonNull(inventory).getHolder();
-
-        Bukkit.getConsoleSender().sendMessage(inventoryImplementation.getInventoryName());
-
-        /*
-        InventoryView inventoryView = event.getView();
-
-        if (!this.inventoryManager.isRegistered(inventoryView.title())) return;
-
+        Inventory inventory = event.getInventory();
+        if (!((inventory.getHolder(false)) instanceof InventoryImplementation inventoryImplementation)) return;
         event.setCancelled(true);
 
-        int clickedSlot = event.getSlot();
-        ItemStack clickedItem = event.getCurrentItem();
-
-        InventoryClickAction inventoryClickAction = this.inventoryManager.getAction(inventoryView.title(), clickedSlot, clickedItem);
-        if (inventoryClickAction != null) {
-            inventoryClickAction.onClick(event);
+        InventoryAction action = event.getAction();
+        if (action.equals(InventoryAction.PICKUP_ALL)) {
+            if (inventoryImplementation.getRegisteredLeftClickActions().containsKey(event.getSlot()))
+                inventoryImplementation.getRegisteredLeftClickActions().get(event.getSlot()).onClick(event);
+        } else if (action.equals(InventoryAction.PICKUP_HALF)) {
+            if (inventoryImplementation.getRegisteredRightClickActions().containsKey(event.getSlot()))
+                inventoryImplementation.getRegisteredRightClickActions().get(event.getSlot()).onClick(event);
         }
-         */
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        Inventory inventory = event.getInventory();
+        if (!((inventory.getHolder(false)) instanceof InventoryImplementation inventoryImplementation)) return;
+
+        for (InventoryCloseAction closeAction : inventoryImplementation.getRegisteredCloseActions()) {
+            closeAction.onClose(event);
+        }
     }
 }

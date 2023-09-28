@@ -1,6 +1,6 @@
 package br.com.rabbithole.common;
 
-import br.com.rabbithole.common.core.inventory.InventoryManager;
+import br.com.rabbithole.common.core.inventory.InventoryListener;
 import br.com.rabbithole.common.core.message.Messages;
 import org.bukkit.plugin.Plugin;
 
@@ -13,11 +13,10 @@ import org.bukkit.plugin.Plugin;
  */
 public final class Common {
     private final Messages messages;
-    private final InventoryManager inventoryManager;
 
     public Common(Plugin plugin) {
         messages = new Messages();
-        inventoryManager = new InventoryManager(plugin);
+        new InventoryListener(plugin);
     }
 
     /**
@@ -27,14 +26,5 @@ public final class Common {
      */
     public Messages getMessages() {
         return messages;
-    }
-
-    /**
-     * Acesso do componente de Inventários.
-     *
-     * @return Instância do componente de Inventários.
-     */
-    public InventoryManager getInventoryManager() {
-        return inventoryManager;
     }
 }
