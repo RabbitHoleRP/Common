@@ -208,6 +208,9 @@ public class PaginationImplementation implements PaginationBase {
             this.actualPage -= 1;
             if (this.actualPage < 0) this.actualPage = 0;
             player.openInventory(new PaginationImplementation(actualPage).getInventory());
+            Bukkit.getConsoleSender().sendMessage("MaxPages: " + this.totalPages);
+            Bukkit.getConsoleSender().sendMessage("ActualPage: " + this.actualPage);
+            Bukkit.getConsoleSender().sendMessage("TotalItemsToDisplay: " + this.registeredItems.size());
         });
         backAction.onClick(event);
     }
@@ -216,7 +219,7 @@ public class PaginationImplementation implements PaginationBase {
     public void setDisplayItems() {
         int indexBase = (this.actualPage * this.maxItemsPerPage) - 1;
         int maxRange = indexBase + this.maxItemsPerPage;
-        if (maxRange > this.registeredItems.size() -1) maxRange = this.registeredItems.size() -1;
+        if (maxRange >= this.registeredItems.size()) maxRange = this.registeredItems.size() -1;
         List<ItemStack> itemsToDisplay = new ArrayList<>();
 
         for (int i = indexBase; i < maxRange; i++) {
@@ -233,9 +236,8 @@ public class PaginationImplementation implements PaginationBase {
 
         for (Map.Entry<Integer, ItemStack> entry : this.registeredExtraItems.entrySet()) {
             ItemStack anExistentItem = this.inventory.getItem(entry.getKey());
-            if (anExistentItem == null) {
+            if (anExistentItem == null)
                 this.inventory.setItem(entry.getKey(), entry.getValue());
-            }
         }
     }
 
