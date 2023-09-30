@@ -24,7 +24,7 @@ public class InventoryListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
-        InventoryAction inventoryAction = inventoryAction = event.getAction();
+        InventoryAction inventoryAction = event.getAction();
 
         if (inventory.getHolder(false) instanceof InventoryImplementation inventoryImplementation) {
             event.setCancelled(true);
@@ -40,9 +40,9 @@ public class InventoryListener implements Listener {
             event.setCancelled(true);
 
             if (paginationImplementation.getForwardButtonSlot() == event.getSlot()) {
-                paginationImplementation.forwardButtonAction((Player) event.getWhoClicked());
+                paginationImplementation.setForwardButtonAction((Player) event.getWhoClicked());
             } else if (paginationImplementation.getBackButtonSlot() == event.getSlot()) {
-                paginationImplementation.backButtonAction((Player) event.getWhoClicked());
+                paginationImplementation.setBackButtonAction((Player) event.getWhoClicked());
             } else if (inventoryAction.equals(InventoryAction.PICKUP_ALL) && paginationImplementation.getDefaultLeftClickAction() != null) {
                 paginationImplementation.getDefaultLeftClickAction().onClick(event);
             } else if (inventoryAction.equals(InventoryAction.PICKUP_HALF) && paginationImplementation.getDefaultRightClickAction() != null) {

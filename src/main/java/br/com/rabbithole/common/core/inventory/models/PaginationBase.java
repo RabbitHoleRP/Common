@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.Map;
 
+//TODO: ADICIONAR MÉTODO PARA EXTRA ITEMS ACTION!
 public interface PaginationBase extends InventoryHolder {
     Component getInventoryName();
 
@@ -35,6 +36,10 @@ public interface PaginationBase extends InventoryHolder {
 
     InventoryClickAction getDefaultRightClickAction();
 
+    InventoryClickAction getForwardClickAction();
+
+    InventoryClickAction getBackClickAction();
+
     InventoryCloseAction getDefaultCloseAction();
 
     Map<Integer, InventoryClickAction> getRegisteredExtraLeftActions();
@@ -43,15 +48,19 @@ public interface PaginationBase extends InventoryHolder {
 
     void addExtraItem(int slot, ItemStack item);
 
+    void setForwardIcon(ItemStack item);
+
+    void setBackIcon(ItemStack item);
+
     void setDefaultLeftClickAction(InventoryClickAction action);
 
     void setDefaultRightClickAction(InventoryClickAction action);
 
     void setDefaultCloseAction(InventoryCloseAction action);
 
-    void forwardButtonAction(Player player);
+    void setForwardButtonAction(Player player);
 
-    void backButtonAction(Player player);
+    void setBackButtonAction(Player player);
 
     void setDisplayItems();
 }

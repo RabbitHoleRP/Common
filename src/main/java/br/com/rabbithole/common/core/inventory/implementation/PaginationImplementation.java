@@ -30,8 +30,6 @@ public class PaginationImplementation implements PaginationBase {
     private InventoryClickAction defaultLeftClickAction;
     private InventoryClickAction defaultRightClickAction;
     private InventoryCloseAction defaultCloseAction;
-    private InventoryClickAction forwardButtonAction;
-    private InventoryClickAction backButtonAction;
     private final Map<Integer, ItemStack> registeredExtraItems;
     private final Map<Integer, InventoryClickAction> registeredExtraLeftClickActions;
     private final Map<Integer, InventoryClickAction> registeredExtraRightClickActions;
@@ -159,6 +157,16 @@ public class PaginationImplementation implements PaginationBase {
     }
 
     @Override
+    public void setForwardIcon(ItemStack item) {
+        this.inventory.setItem(this.forwardButtonSlot, item);
+    }
+
+    @Override
+    public void setBackIcon(ItemStack item) {
+        this.inventory.setItem(this.backButtonSlot, item);
+    }
+
+    @Override
     public void setDefaultLeftClickAction(InventoryClickAction action) {
         this.defaultLeftClickAction = action;
     }
@@ -169,13 +177,23 @@ public class PaginationImplementation implements PaginationBase {
     }
 
     @Override
+    public InventoryClickAction getForwardClickAction() {
+        return null;
+    }
+
+    @Override
+    public InventoryClickAction getBackClickAction() {
+        return null;
+    }
+
+    @Override
     public void setDefaultCloseAction(InventoryCloseAction action) {
         this.defaultCloseAction = action;
     }
 
-    @Override
-    public void forwardButtonAction(Player player) {
-        this.forwardButtonAction = (event -> {
+    @Override //TODO: ALTERAR SET PARA EXECUTE!
+    public void setForwardButtonAction(Player player) {
+        InventoryClickAction forwardAction = (event -> {
             this.actualPage += 1;
             if (this.actualPage > this.totalPages) this.actualPage = totalPages;
             player.openInventory(new PaginationImplementation(
@@ -192,8 +210,8 @@ public class PaginationImplementation implements PaginationBase {
     }
 
     @Override
-    public void backButtonAction(Player player) {
-        this.forwardButtonAction = (event -> {
+    public void setBackButtonAction(Player player) {
+        InventoryClickAction backAction = (event -> {
             this.actualPage -= 1;
             if (this.actualPage < 0) this.actualPage = 0;
             player.openInventory(new PaginationImplementation(
