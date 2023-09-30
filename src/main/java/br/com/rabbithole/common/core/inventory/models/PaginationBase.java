@@ -4,6 +4,7 @@ import br.com.rabbithole.common.core.inventory.actions.InventoryClickAction;
 import br.com.rabbithole.common.core.inventory.actions.InventoryCloseAction;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
@@ -58,9 +59,9 @@ public interface PaginationBase extends InventoryHolder {
 
     void setDefaultCloseAction(InventoryCloseAction action);
 
-    void setForwardButtonAction(Player player);
+    void setForwardButtonAction(Player player, InventoryClickEvent event);
 
-    void setBackButtonAction(Player player);
+    void setBackButtonAction(Player player, InventoryClickEvent event);
 
     void setDisplayItems();
 }

@@ -13,6 +13,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Arrays;
+
 public class InventoryListener implements Listener {
     final Plugin plugin;
 
@@ -40,13 +42,19 @@ public class InventoryListener implements Listener {
             event.setCancelled(true);
 
             if (paginationImplementation.getForwardButtonSlot() == event.getSlot()) {
-                paginationImplementation.setForwardButtonAction((Player) event.getWhoClicked());
+                paginationImplementation.setForwardButtonAction((Player) event.getWhoClicked(), event);
             } else if (paginationImplementation.getBackButtonSlot() == event.getSlot()) {
-                paginationImplementation.setBackButtonAction((Player) event.getWhoClicked());
+                paginationImplementation.setBackButtonAction((Player) event.getWhoClicked(), event);
             } else if (inventoryAction.equals(InventoryAction.PICKUP_ALL) && paginationImplementation.getDefaultLeftClickAction() != null) {
                 paginationImplementation.getDefaultLeftClickAction().onClick(event);
             } else if (inventoryAction.equals(InventoryAction.PICKUP_HALF) && paginationImplementation.getDefaultRightClickAction() != null) {
                 paginationImplementation.getDefaultRightClickAction().onClick(event);
+            } else if (Arrays.stream(paginationImplementation.getItemsPattern()).noneMatch(x -> x == event.getSlot()) && paginationImplementation.getRegisteredExtraItems().containsKey(event.getSlot())) {
+                if (inventoryAction.equals(InventoryAction.PICKUP_ALL)) {
+                    paginationImplementation.getRegisteredExtraLeftActions().get(event.getSlot()).onClick(event);
+                } else if (inventoryAction.equals(InventoryAction.PICKUP_HALF)){
+                    paginationImplementation.getRegisteredExtraRightActions().get(event.getSlot()).onClick(event);
+                }
             }
         }
         /*
