@@ -217,7 +217,7 @@ public class PaginationImplementation implements PaginationBase {
 
     @Override
     public void setDisplayItems() {
-        int indexBase = (this.actualPage * this.maxItemsPerPage) - 1;
+        int indexBase = (this.actualPage * this.maxItemsPerPage);
         int maxRange = indexBase + this.maxItemsPerPage;
         if (maxRange >= this.registeredItems.size()) maxRange = this.registeredItems.size() -1;
         List<ItemStack> itemsToDisplay = new ArrayList<>();
