@@ -6,6 +6,7 @@ import br.com.rabbithole.common.core.inventory.models.PaginationBase;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -192,8 +193,8 @@ public class PaginationImplementation implements PaginationBase {
     }
 
     @Override //TODO: ALTERAR SET PARA EXECUTE!
-    public void setForwardButtonAction(Player player) {
-        InventoryClickAction forwardAction = (event -> {
+    public void setForwardButtonAction(Player player, InventoryClickEvent event) {
+        InventoryClickAction forwardAction = (clickEvent -> {
             this.actualPage += 1;
             if (this.actualPage > this.totalPages) this.actualPage = totalPages;
             player.openInventory(new PaginationImplementation(
@@ -207,11 +208,12 @@ public class PaginationImplementation implements PaginationBase {
                     this.registeredItems
             ).getInventory());
         });
+        forwardAction.onClick(event);
     }
 
     @Override
-    public void setBackButtonAction(Player player) {
-        InventoryClickAction backAction = (event -> {
+    public void setBackButtonAction(Player player, InventoryClickEvent event) {
+        InventoryClickAction backAction = (clickEvent -> {
             this.actualPage -= 1;
             if (this.actualPage < 0) this.actualPage = 0;
             player.openInventory(new PaginationImplementation(
@@ -225,6 +227,7 @@ public class PaginationImplementation implements PaginationBase {
                     this.registeredItems
             ).getInventory());
         });
+        backAction.onClick(event);
     }
 
     @Override
