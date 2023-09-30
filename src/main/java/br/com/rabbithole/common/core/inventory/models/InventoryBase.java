@@ -3,7 +3,6 @@ package br.com.rabbithole.common.core.inventory.models;
 import br.com.rabbithole.common.core.inventory.actions.InventoryClickAction;
 import br.com.rabbithole.common.core.inventory.actions.InventoryCloseAction;
 import net.kyori.adventure.text.Component;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
