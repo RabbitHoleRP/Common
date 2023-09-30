@@ -46,15 +46,15 @@ public class InventoryListener implements Listener {
             } else if (paginationImplementation.getBackButtonSlot() == event.getSlot()) {
                 paginationImplementation.setBackButtonAction((Player) event.getWhoClicked(), event);
             } else if (inventoryAction.equals(InventoryAction.PICKUP_ALL) && paginationImplementation.getDefaultLeftClickAction() != null) {
-                paginationImplementation.getDefaultLeftClickAction().onClick(event);
-            } else if (inventoryAction.equals(InventoryAction.PICKUP_HALF) && paginationImplementation.getDefaultRightClickAction() != null) {
-                paginationImplementation.getDefaultRightClickAction().onClick(event);
-            } else if (Arrays.stream(paginationImplementation.getItemsPattern()).noneMatch(x -> x == event.getSlot()) && paginationImplementation.getRegisteredExtraItems().containsKey(event.getSlot())) {
-                if (inventoryAction.equals(InventoryAction.PICKUP_ALL)) {
+                if (Arrays.stream(paginationImplementation.getItemsPattern()).noneMatch(x -> x == event.getSlot()) && paginationImplementation.getRegisteredExtraItems().containsKey(event.getSlot()))
                     paginationImplementation.getRegisteredExtraLeftActions().get(event.getSlot()).onClick(event);
-                } else if (inventoryAction.equals(InventoryAction.PICKUP_HALF)){
+                else
+                    paginationImplementation.getDefaultLeftClickAction().onClick(event);
+            } else if (inventoryAction.equals(InventoryAction.PICKUP_HALF) && paginationImplementation.getDefaultRightClickAction() != null) {
+                if (Arrays.stream(paginationImplementation.getItemsPattern()).noneMatch(x -> x == event.getSlot()) && paginationImplementation.getRegisteredExtraItems().containsKey(event.getSlot()))
                     paginationImplementation.getRegisteredExtraRightActions().get(event.getSlot()).onClick(event);
-                }
+                else
+                    paginationImplementation.getDefaultRightClickAction().onClick(event);
             }
         }
         /*

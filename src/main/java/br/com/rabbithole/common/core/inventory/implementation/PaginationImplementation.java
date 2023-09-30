@@ -55,17 +55,17 @@ public class PaginationImplementation implements PaginationBase {
         setDisplayItems();
     }
 
-    private PaginationImplementation(int actualPage, Component inventoryName, int inventorySize, int maxItemsPerPage, int[] itemsPattern, int backButtonSlot, int forwardButtonSlot, List<ItemStack> registeredItems) {
-        this.inventoryName = inventoryName;
-        this.inventorySize = inventorySize;
-        this.maxItemsPerPage = maxItemsPerPage;
-        this.totalPages = (registeredItems.size() / maxItemsPerPage) + 1;
+    private PaginationImplementation(int actualPage) {
+        this.inventoryName = getInventoryName();
+        this.inventorySize = getInventorySize();
+        this.maxItemsPerPage = getMaxItemsPerPage();
+        this.totalPages = (getRegisteredItems().size() / getMaxItemsPerPage()) + 1;
         this.actualPage = actualPage;
         this.inventory = Bukkit.createInventory(this, inventorySize, inventoryName);
-        this.itemsPattern = itemsPattern;
-        this.backButtonSlot = backButtonSlot;
-        this.forwardButtonSlot = forwardButtonSlot;
-        this.registeredItems = registeredItems;
+        this.itemsPattern = getItemsPattern();
+        this.backButtonSlot = getBackButtonSlot();
+        this.forwardButtonSlot = getForwardButtonSlot();
+        this.registeredItems = getRegisteredItems();
         this.defaultLeftClickAction = getDefaultLeftClickAction();
         this.defaultRightClickAction = getDefaultRightClickAction();
         this.defaultCloseAction = getDefaultCloseAction();
@@ -197,16 +197,7 @@ public class PaginationImplementation implements PaginationBase {
         InventoryClickAction forwardAction = (clickEvent -> {
             this.actualPage += 1;
             if (this.actualPage > this.totalPages) this.actualPage = totalPages;
-            player.openInventory(new PaginationImplementation(
-                    actualPage,
-                    this.inventoryName,
-                    this.inventorySize,
-                    this.maxItemsPerPage,
-                    this.itemsPattern,
-                    this.backButtonSlot,
-                    this.forwardButtonSlot,
-                    this.registeredItems
-            ).getInventory());
+            player.openInventory(new PaginationImplementation(actualPage).getInventory());
         });
         forwardAction.onClick(event);
     }
@@ -216,23 +207,14 @@ public class PaginationImplementation implements PaginationBase {
         InventoryClickAction backAction = (clickEvent -> {
             this.actualPage -= 1;
             if (this.actualPage < 0) this.actualPage = 0;
-            player.openInventory(new PaginationImplementation(
-                    actualPage,
-                    this.inventoryName,
-                    this.inventorySize,
-                    this.maxItemsPerPage,
-                    this.itemsPattern,
-                    this.backButtonSlot,
-                    this.forwardButtonSlot,
-                    this.registeredItems
-            ).getInventory());
+            player.openInventory(new PaginationImplementation(actualPage).getInventory());
         });
         backAction.onClick(event);
     }
 
     @Override
     public void setDisplayItems() {
-        int indexBase = this.actualPage * this.maxItemsPerPage;
+        int indexBase = (this.actualPage * this.maxItemsPerPage) - 1;
         int maxRange = indexBase + this.maxItemsPerPage;
         if (maxRange > this.registeredItems.size() -1) maxRange = this.registeredItems.size() -1;
         List<ItemStack> itemsToDisplay = new ArrayList<>();
