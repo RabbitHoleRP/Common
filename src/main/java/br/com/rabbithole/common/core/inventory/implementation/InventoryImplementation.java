@@ -5,9 +5,7 @@ import br.com.rabbithole.common.core.inventory.actions.InventoryCloseAction;
 import br.com.rabbithole.common.core.inventory.models.InventoryBase;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 

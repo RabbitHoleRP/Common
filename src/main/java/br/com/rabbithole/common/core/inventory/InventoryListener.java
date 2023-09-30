@@ -2,6 +2,8 @@ package br.com.rabbithole.common.core.inventory;
 
 import br.com.rabbithole.common.core.inventory.actions.InventoryCloseAction;
 import br.com.rabbithole.common.core.inventory.implementation.InventoryImplementation;
+import br.com.rabbithole.common.core.inventory.implementation.PaginationImplementation;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
@@ -22,6 +24,32 @@ public class InventoryListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
+        InventoryAction inventoryAction = inventoryAction = event.getAction();
+
+        if (inventory.getHolder(false) instanceof InventoryImplementation inventoryImplementation) {
+            event.setCancelled(true);
+
+            if (inventoryAction.equals(InventoryAction.PICKUP_ALL)) {
+                if (inventoryImplementation.getRegisteredLeftClickActions().containsKey(event.getSlot()))
+                    inventoryImplementation.getRegisteredLeftClickActions().get(event.getSlot()).onClick(event);
+            } else if (inventoryAction.equals(InventoryAction.PICKUP_HALF)) {
+                if (inventoryImplementation.getRegisteredRightClickActions().containsKey(event.getSlot()))
+                    inventoryImplementation.getRegisteredRightClickActions().get(event.getSlot()).onClick(event);
+            }
+        } else if (inventory.getHolder(false) instanceof PaginationImplementation paginationImplementation) {
+            event.setCancelled(true);
+
+            if (paginationImplementation.getForwardButtonSlot() == event.getSlot()) {
+                paginationImplementation.forwardButtonAction((Player) event.getWhoClicked());
+            } else if (paginationImplementation.getBackButtonSlot() == event.getSlot()) {
+                paginationImplementation.backButtonAction((Player) event.getWhoClicked());
+            } else if (inventoryAction.equals(InventoryAction.PICKUP_ALL) && paginationImplementation.getDefaultLeftClickAction() != null) {
+                paginationImplementation.getDefaultLeftClickAction().onClick(event);
+            } else if (inventoryAction.equals(InventoryAction.PICKUP_HALF) && paginationImplementation.getDefaultRightClickAction() != null) {
+                paginationImplementation.getDefaultRightClickAction().onClick(event);
+            }
+        }
+        /*
         if (!((inventory.getHolder(false)) instanceof InventoryImplementation inventoryImplementation)) return;
         event.setCancelled(true);
 
@@ -33,6 +61,7 @@ public class InventoryListener implements Listener {
             if (inventoryImplementation.getRegisteredRightClickActions().containsKey(event.getSlot()))
                 inventoryImplementation.getRegisteredRightClickActions().get(event.getSlot()).onClick(event);
         }
+         */
     }
 
     @EventHandler
