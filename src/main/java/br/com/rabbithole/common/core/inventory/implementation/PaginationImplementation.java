@@ -66,12 +66,12 @@ public class PaginationImplementation implements PaginationBase {
         this.backButtonSlot = backButtonSlot;
         this.forwardButtonSlot = forwardButtonSlot;
         this.registeredItems = registeredItems;
-        this.defaultLeftClickAction = null;
-        this.defaultRightClickAction = null;
-        this.defaultCloseAction = null;
-        this.registeredExtraItems = new HashMap<>();
-        this.registeredExtraLeftClickActions = new HashMap<>();
-        this.registeredExtraRightClickActions = new HashMap<>();
+        this.defaultLeftClickAction = getDefaultLeftClickAction();
+        this.defaultRightClickAction = getDefaultRightClickAction();
+        this.defaultCloseAction = getDefaultCloseAction();
+        this.registeredExtraItems = getRegisteredExtraItems();
+        this.registeredExtraLeftClickActions = getRegisteredExtraLeftActions();
+        this.registeredExtraRightClickActions = getRegisteredExtraRightActions();
         setDisplayItems();
     }
 
