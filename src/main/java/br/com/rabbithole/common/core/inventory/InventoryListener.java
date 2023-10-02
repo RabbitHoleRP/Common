@@ -29,6 +29,7 @@ public class InventoryListener implements Listener {
 
         if (inventory.getHolder(false) instanceof InventoryImplementation inventoryImplementation) {
             event.setCancelled(true);
+            if (event.getRawSlot() > inventory.getSize()) return;
 
             if (inventoryAction.equals(InventoryAction.PICKUP_ALL)) {
                 if (inventoryImplementation.getRegisteredLeftClickActions().containsKey(event.getSlot()))
@@ -39,6 +40,7 @@ public class InventoryListener implements Listener {
             }
         } else if (inventory.getHolder(false) instanceof PaginationImplementation paginationImplementation) {
             event.setCancelled(true);
+            if (event.getRawSlot() > inventory.getSize()) return;
 
             if (paginationImplementation.getForwardButtonSlot() == event.getSlot()) {
                 if (paginationImplementation.getActualPage() == paginationImplementation.getTotalPages() -1) return;
