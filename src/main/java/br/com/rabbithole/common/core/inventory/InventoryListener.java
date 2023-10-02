@@ -41,10 +41,10 @@ public class InventoryListener implements Listener {
             event.setCancelled(true);
 
             if (paginationImplementation.getForwardButtonSlot() == event.getSlot()) {
-                event.getWhoClicked().sendMessage("VC TA CLICANDO NO FORWARD!");
+                if (paginationImplementation.getActualPage() == paginationImplementation.getTotalPages() -1) return;
                 paginationImplementation.executeForwardAction(event);
             } else if (paginationImplementation.getBackButtonSlot() == event.getSlot()) {
-                event.getWhoClicked().sendMessage("VC TA CLICANDO NO BACK!");
+                if (paginationImplementation.getActualPage() == 0) return;
                 paginationImplementation.executeBackAction(event);
             } else if (inventoryAction.equals(InventoryAction.PICKUP_ALL) && paginationImplementation.getDefaultLeftClickAction() != null && Arrays.stream(paginationImplementation.getItemsPattern()).anyMatch(x -> x == event.getSlot())) {
                 paginationImplementation.getDefaultLeftClickAction().onClick(event);
