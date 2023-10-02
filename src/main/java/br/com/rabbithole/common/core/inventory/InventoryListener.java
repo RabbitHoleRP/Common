@@ -3,7 +3,6 @@ package br.com.rabbithole.common.core.inventory;
 import br.com.rabbithole.common.core.inventory.actions.InventoryCloseAction;
 import br.com.rabbithole.common.core.inventory.implementation.InventoryImplementation;
 import br.com.rabbithole.common.core.inventory.implementation.PaginationImplementation;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
@@ -42,34 +41,23 @@ public class InventoryListener implements Listener {
             event.setCancelled(true);
 
             if (paginationImplementation.getForwardButtonSlot() == event.getSlot()) {
-                paginationImplementation.setForwardButtonAction((Player) event.getWhoClicked(), event);
+                event.getWhoClicked().sendMessage("VC TA CLICANDO NO FORWARD!");
+                paginationImplementation.executeForwardAction(event);
             } else if (paginationImplementation.getBackButtonSlot() == event.getSlot()) {
-                paginationImplementation.setBackButtonAction((Player) event.getWhoClicked(), event);
-            } else if (inventoryAction.equals(InventoryAction.PICKUP_ALL) && paginationImplementation.getDefaultLeftClickAction() != null) {
-                if (Arrays.stream(paginationImplementation.getItemsPattern()).noneMatch(x -> x == event.getSlot()) && paginationImplementation.getRegisteredExtraItems().containsKey(event.getSlot()))
-                    paginationImplementation.getRegisteredExtraLeftActions().get(event.getSlot()).onClick(event);
-                else
-                    paginationImplementation.getDefaultLeftClickAction().onClick(event);
-            } else if (inventoryAction.equals(InventoryAction.PICKUP_HALF) && paginationImplementation.getDefaultRightClickAction() != null) {
-                if (Arrays.stream(paginationImplementation.getItemsPattern()).noneMatch(x -> x == event.getSlot()) && paginationImplementation.getRegisteredExtraItems().containsKey(event.getSlot()))
-                    paginationImplementation.getRegisteredExtraRightActions().get(event.getSlot()).onClick(event);
-                else
-                    paginationImplementation.getDefaultRightClickAction().onClick(event);
+                event.getWhoClicked().sendMessage("VC TA CLICANDO NO BACK!");
+                paginationImplementation.executeBackAction(event);
+            } else if (inventoryAction.equals(InventoryAction.PICKUP_ALL) && paginationImplementation.getDefaultLeftClickAction() != null && Arrays.stream(paginationImplementation.getItemsPattern()).anyMatch(x -> x == event.getSlot())) {
+                paginationImplementation.getDefaultLeftClickAction().onClick(event);
+            } else if (inventoryAction.equals(InventoryAction.PICKUP_HALF) && paginationImplementation.getDefaultRightClickAction() != null && Arrays.stream(paginationImplementation.getItemsPattern()).anyMatch(x -> x == event.getSlot())) {
+                paginationImplementation.getDefaultRightClickAction().onClick(event);
+            } else if (paginationImplementation.getCustomButtons().stream().anyMatch(button -> button.slot() == event.getSlot())) {
+                if (inventoryAction.equals(InventoryAction.PICKUP_ALL) && paginationImplementation.getCustomButtonLeftClickActions().containsKey(event.getSlot())) {
+                    paginationImplementation.getCustomButtonLeftClickActions().get(event.getSlot()).onClick(event);
+                } else if (inventoryAction.equals(InventoryAction.PICKUP_HALF) && paginationImplementation.getCustomButtonRightClickActions().containsKey(event.getSlot())) {
+                    paginationImplementation.getCustomButtonRightClickActions().get(event.getSlot()).onClick(event);
+                }
             }
         }
-        /*
-        if (!((inventory.getHolder(false)) instanceof InventoryImplementation inventoryImplementation)) return;
-        event.setCancelled(true);
-
-        InventoryAction action = event.getAction();
-        if (action.equals(InventoryAction.PICKUP_ALL)) {
-            if (inventoryImplementation.getRegisteredLeftClickActions().containsKey(event.getSlot()))
-                inventoryImplementation.getRegisteredLeftClickActions().get(event.getSlot()).onClick(event);
-        } else if (action.equals(InventoryAction.PICKUP_HALF)) {
-            if (inventoryImplementation.getRegisteredRightClickActions().containsKey(event.getSlot()))
-                inventoryImplementation.getRegisteredRightClickActions().get(event.getSlot()).onClick(event);
-        }
-         */
     }
 
     @EventHandler

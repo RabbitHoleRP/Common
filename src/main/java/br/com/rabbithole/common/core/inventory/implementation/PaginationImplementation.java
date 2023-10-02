@@ -1,21 +1,16 @@
 package br.com.rabbithole.common.core.inventory.implementation;
 
 import br.com.rabbithole.common.core.inventory.actions.InventoryClickAction;
-import br.com.rabbithole.common.core.inventory.actions.InventoryCloseAction;
+import br.com.rabbithole.common.core.inventory.buttons.DisplayButton;
+import br.com.rabbithole.common.core.inventory.buttons.SystemButton;
 import br.com.rabbithole.common.core.inventory.models.PaginationBase;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.IntStream;
+import java.util.*;
 
 public class PaginationImplementation implements PaginationBase {
     private final Component inventoryName;
@@ -25,54 +20,32 @@ public class PaginationImplementation implements PaginationBase {
     private int actualPage;
     private final Inventory inventory;
     private final int[] itemsPattern;
-    private final int backButtonSlot;
-    private final int forwardButtonSlot;
-    private final List<ItemStack> registeredItems;
+    private final SystemButton backButton;
+    private final SystemButton forwardButton;
+    private final List<DisplayButton> registeredItems;
+    private final List<SystemButton> registeredCustomButtons;
+    private final Map<Integer, DisplayButton> displayedItems;
     private InventoryClickAction defaultLeftClickAction;
     private InventoryClickAction defaultRightClickAction;
-    private InventoryCloseAction defaultCloseAction;
-    private final Map<Integer, ItemStack> registeredExtraItems;
-    private final Map<Integer, InventoryClickAction> registeredExtraLeftClickActions;
-    private final Map<Integer, InventoryClickAction> registeredExtraRightClickActions;
+    private final Map<Integer, InventoryClickAction> customButtonLeftClickAction;
+    private final Map<Integer, InventoryClickAction> customButtonRightClickAction;
 
-    public PaginationImplementation(Component inventoryName, int inventorySize, int maxItemsPerPage, int[] itemsPattern, int backButtonSlot, int forwardButtonSlot, List<ItemStack> registeredItems) {
+    public PaginationImplementation(Component inventoryName, int inventorySize, int maxItemsPerPage, int[] itemsPattern, SystemButton backButton, SystemButton forwardButton, List<DisplayButton> registeredItems) {
         this.inventoryName = inventoryName;
         this.inventorySize = inventorySize;
         this.maxItemsPerPage = maxItemsPerPage;
-        this.totalPages = (registeredItems.size() / maxItemsPerPage) + 1;
+        this.totalPages = (int) Math.ceil((double) registeredItems.size() / maxItemsPerPage);
         this.actualPage = 0;
         this.inventory = Bukkit.createInventory(this, inventorySize, inventoryName);
         this.itemsPattern = itemsPattern;
-        this.backButtonSlot = backButtonSlot;
-        this.forwardButtonSlot = forwardButtonSlot;
+        this.backButton = backButton;
+        this.forwardButton = forwardButton;
         this.registeredItems = registeredItems;
-        this.defaultLeftClickAction = null;
-        this.defaultRightClickAction = null;
-        this.defaultCloseAction = null;
-        this.registeredExtraItems = new HashMap<>();
-        this.registeredExtraLeftClickActions = new HashMap<>();
-        this.registeredExtraRightClickActions = new HashMap<>();
-        setDisplayItems();
-    }
-
-    private PaginationImplementation(int actualPage) {
-        this.inventoryName = getInventoryName();
-        this.inventorySize = getInventorySize();
-        this.maxItemsPerPage = getMaxItemsPerPage();
-        this.totalPages = (getRegisteredItems().size() / getMaxItemsPerPage()) + 1;
-        this.actualPage = actualPage;
-        this.inventory = Bukkit.createInventory(this, inventorySize, inventoryName);
-        this.itemsPattern = getItemsPattern();
-        this.backButtonSlot = getBackButtonSlot();
-        this.forwardButtonSlot = getForwardButtonSlot();
-        this.registeredItems = getRegisteredItems();
-        this.defaultLeftClickAction = getDefaultLeftClickAction();
-        this.defaultRightClickAction = getDefaultRightClickAction();
-        this.defaultCloseAction = getDefaultCloseAction();
-        this.registeredExtraItems = getRegisteredExtraItems();
-        this.registeredExtraLeftClickActions = getRegisteredExtraLeftActions();
-        this.registeredExtraRightClickActions = getRegisteredExtraRightActions();
-        setDisplayItems();
+        this.registeredCustomButtons = new ArrayList<>();
+        this.displayedItems = new HashMap<>();
+        this.customButtonLeftClickAction = new HashMap<>();
+        this.customButtonRightClickAction = new HashMap<>();
+        this.setDisplayItems();
     }
 
     @Override
@@ -107,22 +80,27 @@ public class PaginationImplementation implements PaginationBase {
 
     @Override
     public int getBackButtonSlot() {
-        return this.backButtonSlot;
+        return this.backButton.slot();
     }
 
     @Override
     public int getForwardButtonSlot() {
-        return this.forwardButtonSlot;
+        return this.forwardButton.slot();
     }
 
     @Override
-    public List<ItemStack> getRegisteredItems() {
+    public List<DisplayButton> getRegisteredItems() {
         return this.registeredItems;
     }
 
     @Override
-    public Map<Integer, ItemStack> getRegisteredExtraItems() {
-        return this.registeredExtraItems;
+    public List<SystemButton> getCustomButtons() {
+        return this.registeredCustomButtons;
+    }
+
+    @Override
+    public String getClickedItemID(int slot) {
+        return this.displayedItems.get(slot).id();
     }
 
     @Override
@@ -136,35 +114,21 @@ public class PaginationImplementation implements PaginationBase {
     }
 
     @Override
-    public InventoryCloseAction getDefaultCloseAction() {
-        return this.defaultCloseAction;
+    public Map<Integer, InventoryClickAction> getCustomButtonLeftClickActions() {
+        return this.customButtonLeftClickAction;
     }
 
     @Override
-    public Map<Integer, InventoryClickAction> getRegisteredExtraLeftActions() {
-        return this.registeredExtraLeftClickActions;
+    public Map<Integer, InventoryClickAction> getCustomButtonRightClickActions() {
+        return this.customButtonRightClickAction;
     }
 
     @Override
-    public Map<Integer, InventoryClickAction> getRegisteredExtraRightActions() {
-        return this.registeredExtraRightClickActions;
-    }
-
-    @Override
-    public void addExtraItem(int slot, ItemStack item) {
-        this.registeredExtraItems.put(slot, item);
-        if (IntStream.of(itemsPattern).noneMatch(x -> x == slot) && this.backButtonSlot != slot && this.forwardButtonSlot != slot)
-            this.inventory.setItem(slot, item);
-    }
-
-    @Override
-    public void setForwardIcon(ItemStack item) {
-        this.inventory.setItem(this.forwardButtonSlot, item);
-    }
-
-    @Override
-    public void setBackIcon(ItemStack item) {
-        this.inventory.setItem(this.backButtonSlot, item);
+    public void addCustomButton(SystemButton button) {
+        if (Arrays.stream(this.itemsPattern).noneMatch(x -> x == button.slot()) && button.slot() != this.backButton.slot() && button.slot() != this.forwardButton.slot()) {
+            this.registeredCustomButtons.add(button);
+            this.inventory.setItem(button.slot(), button.icon());
+        }
     }
 
     @Override
@@ -178,67 +142,60 @@ public class PaginationImplementation implements PaginationBase {
     }
 
     @Override
-    public InventoryClickAction getForwardClickAction() {
-        return null;
+    public void addCustomLeftClickAction(int slot, InventoryClickAction action) {
+        if (Arrays.stream(this.itemsPattern).noneMatch(x -> x == slot) && slot != this.backButton.slot() && slot != this.forwardButton.slot())
+            this.customButtonLeftClickAction.put(slot, action);
     }
 
     @Override
-    public InventoryClickAction getBackClickAction() {
-        return null;
+    public void addCustomRightClickAction(int slot, InventoryClickAction action) {
+        if (Arrays.stream(this.itemsPattern).noneMatch(x -> x == slot) && slot != this.backButton.slot() && slot != this.forwardButton.slot())
+            this.customButtonRightClickAction.put(slot, action);
     }
 
     @Override
-    public void setDefaultCloseAction(InventoryCloseAction action) {
-        this.defaultCloseAction = action;
-    }
-
-    @Override //TODO: ALTERAR SET PARA EXECUTE!
-    public void setForwardButtonAction(Player player, InventoryClickEvent event) {
-        InventoryClickAction forwardAction = (clickEvent -> {
+    public void executeForwardAction(InventoryClickEvent event) {
+        InventoryClickAction forwardAction = (inventoryClickEvent -> {
             this.actualPage += 1;
-            if (this.actualPage > this.totalPages) this.actualPage = totalPages;
-            player.openInventory(new PaginationImplementation(actualPage).getInventory());
+            if (this.actualPage == this.totalPages) this.actualPage -= 1;
+            this.updateView();
         });
         forwardAction.onClick(event);
     }
 
     @Override
-    public void setBackButtonAction(Player player, InventoryClickEvent event) {
-        InventoryClickAction backAction = (clickEvent -> {
+    public void executeBackAction(InventoryClickEvent event) {
+        InventoryClickAction backAction = (inventoryClickEvent -> {
             this.actualPage -= 1;
             if (this.actualPage < 0) this.actualPage = 0;
-            player.openInventory(new PaginationImplementation(actualPage).getInventory());
-            Bukkit.getConsoleSender().sendMessage("MaxPages: " + this.totalPages);
-            Bukkit.getConsoleSender().sendMessage("ActualPage: " + this.actualPage);
-            Bukkit.getConsoleSender().sendMessage("TotalItemsToDisplay: " + this.registeredItems.size());
+            this.updateView();
         });
         backAction.onClick(event);
     }
 
     @Override
     public void setDisplayItems() {
-        int indexBase = (this.actualPage * this.maxItemsPerPage);
-        int maxRange = indexBase + this.maxItemsPerPage;
-        if (maxRange >= this.registeredItems.size()) maxRange = this.registeredItems.size() -1;
-        List<ItemStack> itemsToDisplay = new ArrayList<>();
+        this.displayedItems.clear();
 
-        for (int i = indexBase; i < maxRange; i++) {
-            itemsToDisplay.add(this.registeredItems.get(i));
-        }
-        //VOU TER A LISTA TOTAL DE ITENS
-        //NÚMERO DE PÁGINAS * MAX_ITEMS_PER_PAGE
-        //CASO PÁGINA = 0 ENTÃO T = 0 * 8 = 0;
-        //CASO PÁGINA = 1 ENTÃO T = 1 * 8 = 0;
-        //T = INDEX DE PESQUISA INICIAL PARA DISPLAY!
-        for (int i = 0; i < this.itemsPattern.length; i++) {
-            this.inventory.setItem(this.itemsPattern[i], itemsToDisplay.get(i));
+        if (this.actualPage != 0) this.inventory.setItem(this.backButton.slot(), this.backButton.icon());
+        if (this.actualPage < this.totalPages - 1) this.inventory.setItem(this.forwardButton.slot(), this.forwardButton.icon());
+
+        int indexBase = this.actualPage * this.maxItemsPerPage;
+        for (int pattern : this.itemsPattern) {
+            if (indexBase == this.registeredItems.size()) return;
+            this.inventory.setItem(pattern, this.registeredItems.get(indexBase).icon());
+            this.displayedItems.put(pattern, this.registeredItems.get(indexBase));
+            indexBase++;
         }
 
-        for (Map.Entry<Integer, ItemStack> entry : this.registeredExtraItems.entrySet()) {
-            ItemStack anExistentItem = this.inventory.getItem(entry.getKey());
-            if (anExistentItem == null)
-                this.inventory.setItem(entry.getKey(), entry.getValue());
+        for (SystemButton customButton : this.registeredCustomButtons) {
+            this.inventory.setItem(customButton.slot(), customButton.icon());
         }
+    }
+
+    public void updateView() {
+        this.inventory.clear();
+        this.setDisplayItems();
     }
 
     @Override
