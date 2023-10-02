@@ -1,17 +1,15 @@
 package br.com.rabbithole.common.core.inventory.models;
 
 import br.com.rabbithole.common.core.inventory.actions.InventoryClickAction;
-import br.com.rabbithole.common.core.inventory.actions.InventoryCloseAction;
+import br.com.rabbithole.common.core.inventory.buttons.DisplayButton;
+import br.com.rabbithole.common.core.inventory.buttons.SystemButton;
 import net.kyori.adventure.text.Component;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Map;
 
-//TODO: ADICIONAR MÉTODO PARA EXTRA ITEMS ACTION!
 public interface PaginationBase extends InventoryHolder {
     Component getInventoryName();
 
@@ -29,39 +27,33 @@ public interface PaginationBase extends InventoryHolder {
 
     int getForwardButtonSlot();
 
-    List<ItemStack> getRegisteredItems();
+    List<DisplayButton> getRegisteredItems();
 
-    Map<Integer, ItemStack> getRegisteredExtraItems();
+    List<SystemButton> getCustomButtons();
+
+    String getClickedItemID(int slot);
 
     InventoryClickAction getDefaultLeftClickAction();
 
     InventoryClickAction getDefaultRightClickAction();
 
-    InventoryClickAction getForwardClickAction();
+    Map<Integer, InventoryClickAction> getCustomButtonLeftClickActions();
 
-    InventoryClickAction getBackClickAction();
+    Map<Integer, InventoryClickAction> getCustomButtonRightClickActions();
 
-    InventoryCloseAction getDefaultCloseAction();
-
-    Map<Integer, InventoryClickAction> getRegisteredExtraLeftActions();
-
-    Map<Integer, InventoryClickAction> getRegisteredExtraRightActions();
-
-    void addExtraItem(int slot, ItemStack item);
-
-    void setForwardIcon(ItemStack item);
-
-    void setBackIcon(ItemStack item);
+    void addCustomButton(SystemButton button);
 
     void setDefaultLeftClickAction(InventoryClickAction action);
 
     void setDefaultRightClickAction(InventoryClickAction action);
 
-    void setDefaultCloseAction(InventoryCloseAction action);
+    void addCustomLeftClickAction(int slot, InventoryClickAction action);
 
-    void setForwardButtonAction(Player player, InventoryClickEvent event);
+    void addCustomRightClickAction(int slot, InventoryClickAction action);
 
-    void setBackButtonAction(Player player, InventoryClickEvent event);
+    void executeForwardAction(InventoryClickEvent event);
+
+    void executeBackAction(InventoryClickEvent event);
 
     void setDisplayItems();
 }
