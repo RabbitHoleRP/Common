@@ -16,8 +16,10 @@ public interface Data<K, V> {
 
     /**
      * Método para criação da Tabela.
+     *
+     * @return "True" caso seja criada com sucesso, "False" caso ocorra um erro.
      */
-    public void createTable();
+    public boolean createTable();
 
     /**
      * Método para inserir dados na Tabela.
