@@ -24,10 +24,11 @@ public interface Data<K, V> {
     /**
      * Método para inserir dados na Tabela.
      *
+     * @param key Chave do objeto que será inserido na Tabela.
      * @param value Objeto que será inserido na Tabela.
      * @return "True" caso seja inserido com sucesso, "False" caso ocorra um erro.
      */
-    public boolean insert(V value);
+    public boolean insert(K key, V value);
 
     /**
      * Método para verificar existência de um dado na Tabela.
